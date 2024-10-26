@@ -43,15 +43,18 @@ const UserDataComponent = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
   const [usePromise, setUsePromise] = useState(true);
+  const [isFetchComplete, setIsFetchComplete] = useState(false);
 
   useEffect(() => {
     const userIds = [1, 2, 3, 4, 5];
     const userNames = ["Robert", "Kusal", "Maahi", "Jeremy", "Nihaal"];
+    setIsFetchComplete(false);
 
     if (usePromise) {
       fetchUserDataWithPromise(userIds, userNames)
         .then((fetchedUsers) => {
           setUsers(fetchedUsers);
+          setIsFetchComplete(true);
           console.log("All users fetched with Promise:", fetchedUsers);
         })
         .catch((err) => {
@@ -61,6 +64,7 @@ const UserDataComponent = () => {
     } else {
       fetchUserDataWithCallback(userIds, (fetchedUsers) => {
         setUsers(fetchedUsers);
+        setIsFetchComplete(true);
         console.log("All users fetched with Callback:", fetchedUsers);
       });
     }
@@ -93,6 +97,11 @@ const UserDataComponent = () => {
           <li key={user.id}>{user.name}</li>
         ))}
       </ul>
+      {isFetchComplete && users.length > 0 && (
+        <p className="mt-4 text-green-600 text-center font-semibold">
+          All users fetched
+        </p>
+      )}
     </TileComponent>
   );
 };
